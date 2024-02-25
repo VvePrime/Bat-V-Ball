@@ -1,0 +1,32 @@
+dependency injection is a design pattern which provides the dependencies while helping us achieve loose coupling
+Bean life Cycle - https://www.geeksforgeeks.org/bean-life-cycle-in-java-spring/
+@PropertySource - to define which properties class has @Values which are used in the current class
+@Configuration class has @Bean and the methods with @Bean annotation define the dependencies if any.
+ - @Component and @Autowired repalce the above class and reduce the work that is required to put into configuring the dependencies.
+Command line runner has run() method.
+this run method of all the components implementing this CommandLineRunner interface is called when the application is started.
+
+dependencies can also be injected by setterInjection and constructor injection both using @Autowired annotation.
+
+@SpringBootApplication is a combination of @EnableAutoConfiguration, @ComponentScan and @SpringBootConfiguration(@Configuration)
+@ComponentScan scans all the classes with @Component annotation and creates beans.
+
+A servlet in Java is a class that handles requests, processes them, and replies back with a response
+
+embedded servlet container is nothing but embedded web server.
+- it initializes and destorys servlets.
+
+
+???
+java based config, java annotation config, auto config differences
+
+AOP
+- to make the code involving cross cutting concerns loosely coupled with business logic.
+- join point is a specific point such as method execution, exception handling. in spring only method execution is the join point
+- point cut is an expression which is used to identify join points
+- point cut expression has a lot of variations like we can select all the methods with a specific annotation, with args, with args at different positions, etc.
+- Aspect is the class which implements the cross cutting concerns.
+- Advice is a method of Aspect which implements cross cutitng concerns
+- @EnableAspectJAutoProxy required on @SpringBootApplication main class to get the AspectJ implementation to Work
+
+-----------------------------------------------------------------------------------------------------------------------

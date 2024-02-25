@@ -1,0 +1,17 @@
+
+hashMap:
+uses array and linkedLists internally
+each index in the array is a bucket. each bucket has node(s) of linked list.
+when we put an entry in map, an index is generated for key value[index = hashCode(key)*(n-1) where n is total buckets]. and a node is saved in the bucket with that index.
+if two keys get the same node value, then the new value is inserted as next node in the same bucket index.
+
+LinkedHashMap maintains insertion order.
+TreeMap organises in the asending order of key value and also doenst allow any null keys
+
+hashTable is same as HashMap but uses list in place of linked list, hashTable is synchronised and also doesnt allow any null keys
+
+
+Comparable - compareTo() -> object class implements Comparable and overrides compareTo() -> too much code
+Comparator - compare() -> new class to compare can be created -> if compare method is used it is same as compareTo() of Comparable -> less code to create sorting by multiple attributes
+
+

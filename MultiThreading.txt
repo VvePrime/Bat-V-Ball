@@ -1,0 +1,46 @@
+multi tasking - two types - 1. multiprocessing 2. multithreading
+
+multiprocessing uses separate memory for the processes
+multi threading uses shared memore for the threads.
+
+multi processing happens in the OS.
+in each process in multiprocessing, multi threading happens.
+Deamon threads are threads that provide services to user threads. they run automatically.
+
+Race condition - if two threads gain access to the same data and try to manipulate leading to inconsitencies.
+
+Synchronized blocks - only one thread can access this block at a point of time 
+ - the thread which has the object lock is the thread that has access. 
+( the thread which runs the synchronized method for the first time has the lock until it si done with executing that method or block)
+ - object lock can be of any object.
+ - two methods having the same object lock cannot be accessed by different threads at same time.
+ -public synchronized void method() - when we use synchronized as a word like this instead of block, instance of object(Stack) is the object lock
+ -  for static methods, Object.class(Stack) is the object lock
+
+Thread Safety - the classification of classes which dont let their state be effected even though being accessed concurrently by multiple threads.
+
+volatile - cache causing inconsistent value updation and reading from main memory. volatile will make accessing and updating directly from main memory.
+producer consumer problem
+- add remove operations are required to be done by threads - when add meets the full capacity queue or when remove meets empty queue 
+- let the other queue add or remove( this thread notifies all ) then the threads waiting will resume to do its operation.
+- if the max capacity is met and there are more threads which want to add than remove, then few threads which want to add remain in waiting leading to deadlock.
+      to solve this, some implementations of blocking queue have a timeout feature
+ - all the treads waiting are in Wait Set
+ - notify()/notifyAll() and wait() relinquish the object lock
+
+out of sleep - time elapsed, interrupted
+out of wait - notified, time out( we can set timeout in some implementations), interrupted. 
+		if timed out or notified, the thread will behave the same after waking up
+yield() - if called on a thread, it goes into runnable state from running state.
+
+thread doest relinquish lock while sleeping but reliquishes while waiting
+
+if a thread is in sleep or waiting, if interrupt method is called on that thread then it throws interrupted exception.
+ -  if it isnt sleeping or waiting then it wont throw the exception but will run it normally.
+
+calling run() before start() - if we call run directly instead of start, it will the contnet of run method in the same (main) thread instead of creating a new thread.
+ - calling start will create a new call stack for the new thread created. if we call run directly, the method will be added to already exisiting main thread call stack as a new thread isnt created.
+
+thread priority can be set by us - but its still in JVM hands if it wants to choose a thread of higher priority. default priority = 5, min=1 max=10
+??
+yield()
