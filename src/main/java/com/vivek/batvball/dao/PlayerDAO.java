@@ -1,4 +1,4 @@
-package com.vivek.dao;
+package com.vivek.batvball.dao;
 
 import java.util.List;
 
@@ -21,11 +21,12 @@ public class PlayerDAO {
 		return player;
 	}
 	
-	public Long getRuns() {
+	public Long getRuns(Integer id) {
 		Configuration con = new Configuration().addAnnotatedClass(Player.class);
 		SessionFactory sf = con.buildSessionFactory();
 		Session ss = sf.openSession();
-		Query q= ss.createQuery("select p.runs from Player p where p.id = 10");
+		Query q= ss.createQuery("select p.runs from Player p where p.id= :id");
+		q.setInteger("id", id);
 		List<Long> runs = q.getResultList();
 		return runs.get(0);
 	}
