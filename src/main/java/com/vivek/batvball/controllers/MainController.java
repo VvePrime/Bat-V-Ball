@@ -57,5 +57,11 @@ public class MainController {
 		playerService.processInput(scoreCardDTO);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+	
+	@PostMapping(value="/process-file")
+	public ResponseEntity<String> processFile(){
+		playerService.processFile();
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
 
 }
