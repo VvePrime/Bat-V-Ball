@@ -57,7 +57,7 @@ public class Player implements Serializable{
 	private Float average;
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "player_id", referencedColumnName = "id")
+	@JoinColumn(name = "player_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private List<DayData> dayData;
 
 	public Integer getId() {

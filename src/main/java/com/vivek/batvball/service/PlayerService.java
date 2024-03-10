@@ -38,12 +38,11 @@ public class PlayerService {
 	}
 
 	private void insertScoreCard(ScoreCardInputDTO scoreCardDTO, Player player) {
-		Boolean isScoreCardPresent = false;
-		calculateScore(scoreCardDTO,player,isScoreCardPresent);
+		Boolean isScoreCardPresent = calculateScore(scoreCardDTO,player);
 		playerDAO.saveScoreCard(player,isScoreCardPresent);
 	}
 	
-	private Player calculateScore(ScoreCardInputDTO scoreCardDTO, Player player, Boolean isScoreCardPresent) {
+	private Boolean calculateScore(ScoreCardInputDTO scoreCardDTO, Player player) {
 		List<Character> chars = scoreCardDTO.getScoreCard().chars().mapToObj(e->(char)e).collect(Collectors.toList());
 		Integer dots,singles,doubles,threes,fours,sixes,dismissed,runs;
 		dots = singles = doubles = threes = fours = sixes = dismissed = runs = 0;
@@ -82,7 +81,7 @@ public class PlayerService {
 		player.setSixes(player.getSixes()+sixes);
 		player.setRuns(player.getRuns()+runs);
 		Float average;
-		if(dismissed > 0) average = (float) (player.getRuns()/player.getDismissed());
+		if(dismissed + player.getDismissed() > 0) average = (float) (player.getRuns()/player.getDismissed());
 		else average = (float)player.getRuns();
 		player.setAverage( average );
 		
@@ -92,26 +91,27 @@ public class PlayerService {
 		List<DayData> dayDataFilteredList = null;
 		
 		if(!dayDataList.isEmpty())
-			dayDataFilteredList = dayDataList.stream().filter(d->d.getDayDataId().getDate().equals(scoreCardDTO.getDateString()))
-				.collect(Collectors.toList());
+			dayDataFilteredList = dayDataList.stream()
+					.filter(s-> s.getDayDataId().getDate().equals(scoreCardDTO.getDateString()) && s.getDayDataId().getPlayer().getId()== scoreCardDTO.getPlayerId())
+					.collect(Collectors.toList());
 		if(dayDataFilteredList == null || dayDataFilteredList.isEmpty()) {
 			DayData dayData = new DayData();
 			dayData.setScorecard(scoreCardDTO.getScoreCard());
 			DayDataId dayDataId = new DayDataId();
 			dayDataId.setDate(scoreCardDTO.getDateString());
-			dayDataId.setPlayerId(player.getId());
+			dayDataId.setPlayer(player);
 			dayData.setUpdatedOn(new Date());
 			dayData.setDayDataId(dayDataId);
 			player.setDayData(List.of(dayData));
+			return false;
 		}
 		else {
 			DayData dayDataCurr = dayDataFilteredList.get(0);
 			dayDataCurr.setScorecard(dayDataCurr.getScorecard().concat(scoreCardDTO.getScoreCard()));
 			dayDataCurr.setUpdatedOn(new Date());
 			player.setDayData(List.of(dayDataCurr));
-			isScoreCardPresent = true;
+			return true;
 		}		
-		return player;
 	}
 
 }

@@ -1,9 +1,6 @@
 package com.vivek.batvball.dao;
 
-import java.util.Date;
 import java.util.List;
-
-import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -80,30 +77,12 @@ public class PlayerDAO {
 		SessionFactory sf = con.buildSessionFactory();
 		Session ss = sf.openSession();
 		Transaction tr = ss.beginTransaction();
-		Query query =ss.createQuery("update Player set runs=:runs,singles=:singles,doubles=:doubles,threes=:threes,"
-				+ "fours=:fours,sixes=:sixes,average=:average,dots=:dots,dismissed=:dismissed where id=:id");
-		query.setParameter("runs", player.getRuns());
-		query.setParameter("singles", player.getSingles());
-		query.setParameter("doubles", player.getDoubles());
-		query.setParameter("threes", player.getThrees());
-		query.setParameter("fours", player.getFours());
-		query.setParameter("sixes", player.getSixes());
-		query.setParameter("average", player.getAverage());
-		query.setParameter("dots", player.getDots());
-		query.setParameter("dismissed", player.getDismissed());
-		query.setParameter("id", player.getId());
-		query.executeUpdate();
+		ss.update(player);
 		List <DayData> dayData = player.getDayData();
-		if(isCardPresent)
+		if(!isCardPresent)
 			ss.save(dayData.get(0));
 		else {
 			ss.update(dayData.get(0));
-//			Query query2 =ss.createQuery("update DayData set scorecard=:scorecard,updated_on=:updatedon where date=:date and player_id=:pid");
-//			query.setParameter("scorecard", player.getDayData().get(0).getScorecard());
-//			query.setParameter("updatedon", new Date());
-//			query.setParameter("date", player.getDayData().get(0).getDayDataId().getDate());
-//			query.setParameter("pid", player.getId());
-//			query.executeUpdate();
 		}
 		tr.commit();
 		ss.close();

@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class DayDataId implements Serializable{
@@ -14,8 +17,11 @@ public class DayDataId implements Serializable{
 	@Column(name="date")
 	private String date;
 	
-	@Column(name="player_id")
-	private Integer playerId;
+//	@Column(name="player_id")
+//	private Integer playerId;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="player_id")
+	private Player player;
 
 	public String getDate() {
 		return date;
@@ -25,22 +31,23 @@ public class DayDataId implements Serializable{
 		this.date = date;
 	}
 
-	public Integer getPlayerId() {
-		return playerId;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void setPlayerId(Integer playerId) {
-		this.playerId = playerId;
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
+
 
 	@Override
 	public String toString() {
-		return "DayDataId [date=" + date + ", playerId=" + playerId + "]";
+		return "DayDataId [date=" + date + ", player=" + player + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, playerId);
+		return Objects.hash(date, player);
 	}
 
 	@Override
@@ -52,7 +59,7 @@ public class DayDataId implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		DayDataId other = (DayDataId) obj;
-		return Objects.equals(date, other.date) && Objects.equals(playerId, other.playerId);
+		return Objects.equals(date, other.date) && Objects.equals(player, other.player);
 	}
 	
 	
