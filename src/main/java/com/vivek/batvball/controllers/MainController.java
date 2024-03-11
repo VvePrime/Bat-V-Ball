@@ -63,5 +63,12 @@ public class MainController {
 		playerService.processFile();
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+	
+	@GetMapping(value="/test-multi-query")
+	public ResponseEntity<String> testMultiQuery() {
+		Player player = dao.testMultiQuery();
+		System.out.println(player.getName());
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
 
 }

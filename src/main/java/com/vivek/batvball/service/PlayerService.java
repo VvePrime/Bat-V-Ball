@@ -114,29 +114,30 @@ public class PlayerService {
 
 		// convert to map to get the value by date str and change and put and then
 		// finally convert to list and put it in player obj
-		List<DayData> dayDataList = player.getDayData();
+		List<DayData> dayDataList = player.getDayDataList();
 		List<DayData> dayDataFilteredList = null;
 
 		if (!dayDataList.isEmpty())
 			dayDataFilteredList = dayDataList.stream()
 					.filter(s -> s.getDayDataId().getDate().equals(scoreCardDTO.getDateString())
-							&& s.getDayDataId().getPlayer().getId() == scoreCardDTO.getPlayerId())
+							&& s.getDayDataId().getPlayerId() == scoreCardDTO.getPlayerId())
 					.collect(Collectors.toList());
 		if (dayDataFilteredList == null || dayDataFilteredList.isEmpty()) {
 			DayData dayData = new DayData();
 			dayData.setScorecard(scoreCardDTO.getScoreCard());
 			DayDataId dayDataId = new DayDataId();
 			dayDataId.setDate(scoreCardDTO.getDateString());
-			dayDataId.setPlayer(player);
+//			dayDataId.setPlayerId(player.getId());
+			dayData.setPlayer(player);
 			dayData.setUpdatedOn(new Date());
 			dayData.setDayDataId(dayDataId);
-			player.setDayData(List.of(dayData));
+			player.setDayDataList(List.of(dayData));
 			return false;
 		} else {
 			DayData dayDataCurr = dayDataFilteredList.get(0);
 			dayDataCurr.setScorecard(dayDataCurr.getScorecard().concat(scoreCardDTO.getScoreCard()));
 			dayDataCurr.setUpdatedOn(new Date());
-			player.setDayData(List.of(dayDataCurr));
+			player.setDayDataList(List.of(dayDataCurr));
 			return true;
 		}
 	}
