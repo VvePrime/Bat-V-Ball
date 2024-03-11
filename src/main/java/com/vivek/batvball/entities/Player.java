@@ -1,6 +1,7 @@
 package com.vivek.batvball.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -56,9 +56,8 @@ public class Player implements Serializable{
 	@Column(name="average")
 	private Float average;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "player_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private List<DayData> dayData;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DayData> dayDataList = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -82,6 +81,14 @@ public class Player implements Serializable{
 
 	public void setRuns(Integer runs) {
 		this.runs = runs;
+	}
+
+	public Integer getDots() {
+		return dots;
+	}
+
+	public void setDots(Integer dots) {
+		this.dots = dots;
 	}
 
 	public Integer getSingles() {
@@ -140,51 +147,18 @@ public class Player implements Serializable{
 		this.average = average;
 	}
 
-	public Integer getDots() {
-		return dots;
+	public List<DayData> getDayDataList() {
+		return dayDataList;
 	}
 
-	public void setDots(Integer dots) {
-		this.dots = dots;
-	}
-
-	public List<DayData> getDayData() {
-		return dayData;
-	}
-
-	public void setDayData(List<DayData> dayData) {
-		this.dayData = dayData;
-	}
-
-	public Player(Integer id, String name, Integer runs, Integer dots, Integer singles, Integer doubles, Integer threes, Integer fours, Integer sixes,
-			Integer dismissed, Float average) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.runs = runs;
-		this.singles = singles;
-		this.doubles = doubles;
-		this.threes = threes;
-		this.fours = fours;
-		this.sixes = sixes;
-		this.dismissed = dismissed;
-		this.average = average;
-		this.dots = dots;
-	}
-	public Player() {
-		
-	}
-
-	@Override
-	public String toString() {
-		return "Player [id=" + id + ", name=" + name + ", runs=" + runs + ", dots=" + dots + ", singles=" + singles
-				+ ", doubles=" + doubles + ", threes=" + threes + ", fours=" + fours + ", sixes=" + sixes
-				+ ", dismissed=" + dismissed + ", average=" + average + ", dayData=" + dayData + "]";
+	public void setDayDataList(List<DayData> dayDataList) {
+		this.dayDataList = dayDataList;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(average, dayData, dismissed, dots, doubles, fours, id, name, runs, singles, sixes, threes);
+		return Objects.hash(average, dayDataList, dismissed, dots, doubles, fours, id, name, runs, singles, sixes,
+				threes);
 	}
 
 	@Override
@@ -196,12 +170,19 @@ public class Player implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Player other = (Player) obj;
-		return Objects.equals(average, other.average) && Objects.equals(dayData, other.dayData)
+		return Objects.equals(average, other.average) && Objects.equals(dayDataList, other.dayDataList)
 				&& Objects.equals(dismissed, other.dismissed) && Objects.equals(dots, other.dots)
 				&& Objects.equals(doubles, other.doubles) && Objects.equals(fours, other.fours)
 				&& Objects.equals(id, other.id) && Objects.equals(name, other.name) && Objects.equals(runs, other.runs)
 				&& Objects.equals(singles, other.singles) && Objects.equals(sixes, other.sixes)
 				&& Objects.equals(threes, other.threes);
+	}
+
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", name=" + name + ", runs=" + runs + ", dots=" + dots + ", singles=" + singles
+				+ ", doubles=" + doubles + ", threes=" + threes + ", fours=" + fours + ", sixes=" + sixes
+				+ ", dismissed=" + dismissed + ", average=" + average + ", dayDataList=" + dayDataList + "]";
 	}
 
 }
