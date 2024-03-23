@@ -95,9 +95,6 @@ public class PlayerDAO {
 		Query<Player> query =ss.createQuery("SELECT p FROM Player p WHERE p.id = :id", Player.class);
 		query.setParameter("id", 21);
 		List<Player> players = query.getResultList();
-//		Query query2 =ss.createQuery("SELECT p FROM day_data p WHERE p.date = :date");
-//		query2.setParameter("date", "03-02-2024");
-//		List<DayData> dayData = query2.getResultList();
 		return players.get(0);
 	}
 
