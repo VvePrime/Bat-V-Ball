@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 
 @NamedQueries({
 		@NamedQuery(name = "bestAverage", query = "SELECT p FROM Player p WHERE p.average = (SELECT MAX(p2.average) FROM Player p2)"),
@@ -56,7 +56,7 @@ public class Player implements Serializable{
 	@Column(name="average")
 	private Float average;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "player", cascade = CascadeType.REMOVE)
     private List<DayData> dayDataList = new ArrayList<>();
 
 	public Integer getId() {
