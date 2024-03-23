@@ -34,8 +34,6 @@ public class PlayerService {
 		try {
 			fileReader = new FileReader(filePath);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		if (fileReader != null)
 			return parseCSV(fileReader);

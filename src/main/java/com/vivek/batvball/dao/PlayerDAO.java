@@ -47,7 +47,7 @@ public class PlayerDAO {
 		Configuration con = new Configuration().addAnnotatedClass(Player.class).addAnnotatedClass(DayData.class);
 		SessionFactory sf = con.buildSessionFactory();
 		Session ss = sf.openSession();
-		Query query =ss.createQuery("SELECT p FROM Player p WHERE p.sixes = (SELECT MAX(p2.sixes) FROM Player p2)");
+		Query<Player> query =ss.createQuery("SELECT p FROM Player p WHERE p.sixes = (SELECT MAX(p2.sixes) FROM Player p2)", Player.class);
 		List<Player> players = query.getResultList();
 		ss.close();
 		return players.get(0);
@@ -61,16 +61,16 @@ public class PlayerDAO {
 		ss.close();
 		return players.get(0);
 	}
-//	
-//	public Long getRuns(Integer id) {
-//		Configuration con = new Configuration().addAnnotatedClass(Player.class);
-//		SessionFactory sf = con.buildSessionFactory();
-//		Session ss = sf.openSession();
-//		Query q= ss.createQuery("select p.runs from Player p where p.id= :id");
-//		q.setInteger("id", id);
-//		List<Long> runs = q.getResultList();
-//		return runs.get(0);
-//	}
+	
+	public Integer getRuns(Integer id) {
+		Configuration con = new Configuration().addAnnotatedClass(Player.class);
+		SessionFactory sf = con.buildSessionFactory();
+		Session ss = sf.openSession();
+		Query<Integer> q= ss.createNativeQuery("select p.runs from Player p where p.id= :id", Integer.class);
+		q.setParameter("id", id);
+		List<Integer> runs = q.getResultList();
+		return runs.get(0);
+	}
 	
 	public void saveScoreCard(Player player, Boolean isCardPresent) {
 		Configuration con = new Configuration().addAnnotatedClass(Player.class).addAnnotatedClass(DayData.class);
@@ -92,13 +92,13 @@ public class PlayerDAO {
 		Configuration con = new Configuration().addAnnotatedClass(Player.class).addAnnotatedClass(DayData.class);
 		SessionFactory sf = con.buildSessionFactory();
 		Session ss = sf.openSession();
-		Query query =ss.createQuery("SELECT p FROM Player p WHERE p.id = :id");
+		Query<Player> query =ss.createQuery("SELECT p FROM Player p WHERE p.id = :id", Player.class);
 		query.setParameter("id", 21);
 		List<Player> players = query.getResultList();
 //		Query query2 =ss.createQuery("SELECT p FROM day_data p WHERE p.date = :date");
 //		query2.setParameter("date", "03-02-2024");
 //		List<DayData> dayData = query2.getResultList();
-		return null;
+		return players.get(0);
 	}
 
 }
