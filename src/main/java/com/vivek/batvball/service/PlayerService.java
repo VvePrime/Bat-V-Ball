@@ -125,8 +125,8 @@ public class PlayerService {
 			dayData.setScorecard(scoreCardDTO.getScoreCard());
 			DayDataId dayDataId = new DayDataId();
 			dayDataId.setDate(scoreCardDTO.getDateString());
-//			dayDataId.setPlayerId(player.getId());
-			dayData.setPlayer(player);
+			dayDataId.setPlayerId(player.getId());
+//			dayData.setPlayer(player);
 			dayData.setUpdatedOn(new Date());
 			dayData.setDayDataId(dayDataId);
 			player.setDayDataList(List.of(dayData));
