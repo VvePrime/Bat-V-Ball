@@ -35,8 +35,6 @@ public class RequestLoggingAspect {
     @AfterReturning(pointcut = "execution(* com.vivek.batvball.controllers.*.*(..))", returning = "result")
     public void logResponseAfter(JoinPoint joinPoint, Object result) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-
         logger.info("Response -- Status: {}, Body: {}", 
                     attributes.getResponse().getStatus(), 
                     result != null ? result.toString() : "No Content");

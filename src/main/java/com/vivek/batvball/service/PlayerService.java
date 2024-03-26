@@ -2,10 +2,15 @@ package com.vivek.batvball.service;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,8 @@ public class PlayerService {
 
 	@Autowired
 	PlayerDAO playerDAO;
+	
+	 private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public void processFile() {
 		List<ScoreCardInputDTO> scoreCardList = readFile("src/main/resources/input-file.txt");
@@ -34,6 +41,7 @@ public class PlayerService {
 		try {
 			fileReader = new FileReader(filePath);
 		} catch (FileNotFoundException e) {
+			logger.info("An exception occured while trying to read file.");
 		}
 		if (fileReader != null)
 			return parseCSV(fileReader);
@@ -49,22 +57,54 @@ public class PlayerService {
 
 	public void processInput(ScoreCardInputDTO scoreCardDTO) {
 		Player player = playerDAO.getPlayerDetailsById(scoreCardDTO.getPlayerId());
-		if (player != null && validateInputDateString(scoreCardDTO)) {
+		if (null != player && validateInput(scoreCardDTO) && !isCardAlreadyPresent(scoreCardDTO, player)) {
 			insertScoreCard(scoreCardDTO, player);
-		} else
-			System.out.println("Invalid Player Id - player not present");
+		}
 	}
 
-	private boolean validateInputDateString(ScoreCardInputDTO scoreCardDTO) {
-		return true;
+	private boolean validateInput(ScoreCardInputDTO scoreCardDTO) {
+		Boolean isDateValid = false;
+		Boolean isCardValid = false;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	        LocalDate date = LocalDate.parse(scoreCardDTO.getDateString(), formatter);
+	        isDateValid = date.isBefore(LocalDate.now());
+		}
+		catch(DateTimeParseException ex) {
+			logger.error("Date format is invalid. required format is : dd-mm-yyyy");
+		}
+		String scoreCard = scoreCardDTO.getScoreCard();
+		if(!scoreCard.contains("w") || (scoreCard.contains("w") && (scoreCard.indexOf("w") == scoreCard.length()-1)))
+			isCardValid = true;
+		if(!isCardValid)
+			logger.info("Score Card is invalid. Runs shouldnt be present after wicket.");
+		if(!isDateValid)
+			logger.info("Date is invalid.");
+		return isDateValid && isCardValid;
 	}
 
 	private void insertScoreCard(ScoreCardInputDTO scoreCardDTO, Player player) {
-		Boolean isScoreCardPresent = calculateScore(scoreCardDTO, player);
-		playerDAO.saveScoreCard(player, isScoreCardPresent);
+		calculateScore(scoreCardDTO, player);
+		playerDAO.saveScoreCard(player);
+		logger.info("Score Card successfully saved.");
+	}
+	
+	private Boolean isCardAlreadyPresent(ScoreCardInputDTO scoreCardDTO, Player player) {
+		List<DayData> dayDataList = player.getDayDataList();
+		List<DayData> dayDataFilteredList = null;
+		if (!dayDataList.isEmpty())
+			dayDataFilteredList = dayDataList.stream()
+					.filter(s -> s.getDayDataId().getDate().equals(scoreCardDTO.getDateString())
+							&& s.getDayDataId().getPlayerId() == scoreCardDTO.getPlayerId())
+					.collect(Collectors.toList());
+		if (null != dayDataFilteredList && !dayDataFilteredList.isEmpty()) {
+			logger.info("Score card already present for this date.");
+			return true;
+		}
+		return false;
 	}
 
-	private Boolean calculateScore(ScoreCardInputDTO scoreCardDTO, Player player) {
+	private void calculateScore(ScoreCardInputDTO scoreCardDTO, Player player) {
 		List<Character> chars = scoreCardDTO.getScoreCard().chars().mapToObj(e -> (char) e)
 				.collect(Collectors.toList());
 		Integer dots, singles, doubles, threes, fours, sixes, dismissed, runs;
@@ -105,22 +145,11 @@ public class PlayerService {
 		player.setRuns(player.getRuns() + runs);
 		Float average;
 		if (dismissed + player.getDismissed() > 0)
-			average = (float) (player.getRuns() / player.getDismissed());
+			average = (float) ((float)player.getRuns() / (float)player.getDismissed());
 		else
 			average = (float) player.getRuns();
 		player.setAverage(average);
 
-		// convert to map to get the value by date str and change and put and then
-		// finally convert to list and put it in player obj
-		List<DayData> dayDataList = player.getDayDataList();
-		List<DayData> dayDataFilteredList = null;
-
-		if (!dayDataList.isEmpty())
-			dayDataFilteredList = dayDataList.stream()
-					.filter(s -> s.getDayDataId().getDate().equals(scoreCardDTO.getDateString())
-							&& s.getDayDataId().getPlayerId() == scoreCardDTO.getPlayerId())
-					.collect(Collectors.toList());
-		if (dayDataFilteredList == null || dayDataFilteredList.isEmpty()) {
 			DayData dayData = new DayData();
 			dayData.setScorecard(scoreCardDTO.getScoreCard());
 			DayDataId dayDataId = new DayDataId();
@@ -130,14 +159,6 @@ public class PlayerService {
 			dayData.setUpdatedOn(new Date());
 			dayData.setDayDataId(dayDataId);
 			player.setDayDataList(List.of(dayData));
-			return false;
-		} else {
-			DayData dayDataCurr = dayDataFilteredList.get(0);
-			dayDataCurr.setScorecard(dayDataCurr.getScorecard().concat(scoreCardDTO.getScoreCard()));
-			dayDataCurr.setUpdatedOn(new Date());
-			player.setDayDataList(List.of(dayDataCurr));
-			return true;
-		}
 	}
 
 }

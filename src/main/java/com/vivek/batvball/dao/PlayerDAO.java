@@ -69,16 +69,16 @@ public class PlayerDAO {
 	}
 	
 	@Transactional
-	public void saveScoreCard(Player player, Boolean isCardPresent) {
+	public void saveScoreCard(Player player) {
 		Session ss = sf.openSession();
 		Transaction tr = ss.beginTransaction();
 		List <DayData> dayData = player.getDayDataList();
 		ss.clear();
-		if(!isCardPresent)
-			insertDayData(dayData.get(0));
-		else {
-			ss.merge(dayData.get(0));
-		}
+//		if(!isCardPresent)
+		insertDayData(dayData.get(0));
+//		else {
+//			ss.merge(dayData.get(0));
+//		}
 		updatePlayer(player);
 		tr.commit();
 		ss.close();
