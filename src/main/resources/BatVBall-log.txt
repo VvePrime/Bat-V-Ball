@@ -1,0 +1,80 @@
+created with spring initializr - spring web, spring data jpa with hibernate, mysql driver dependencies
+mysql installed port - 3306
+root joeroot
+
+to stop mysql server- possible from windows cmd as administrator - not possible from mysql command line client and also cmd as normal user.
+
+was not able to start until spring data jpa dependency is removed.( have to configure db if it is added )
+
+git init by default creates master
+but the default branch in github is main
+so it wont push because of branch mismatch. 
+may be we might have to switch to main branch and then push to directly push to remote main.
+
+hibernate needs either xml config or hibernate.properties to define the config details
+hibernate.properties will get loaded automatically.
+
+the HQL query will not have table names but Entity names ie.
+select * from player is wrong as player is table name
+select * from Player is correct as Player is entity name.
+
+just need annotations for Rest api and it will run automatically on tomcat port
+if server.port=8765 is given it will run on custom port.
+
+player -> id, name, runs, dots, fours, sixes, singles, twos, threes, outs, average
+data -> date, player_id, scorecard, updatedon
+
+average two decimal points only.
+
+create table player ( id int not null, name varchar ( 50 ) not null, runs int not null, dots int not null, singles int not null, 
+doubles int not null, threes int not null, fours int not null, sixes int not null, dismissed int not null, average float(8,2) not null,
+primary key(id) );
+
+insert into player values (21, 'Ricky', 0,0,0,0,0,0,0,0,0.0);
+
+create table day_data( date varchar(10) not null, 
+player_id int not null, scorecard varchar(540), updated_on timestamp not null, primary key(date,player_id),
+FOREIGN KEY (player_id) REFERENCES Player(id) );
+
+file format -> txt
+content format -> datestring,player_id, scorecard
+
+error caused because of fetch type not put to eager with one to many annotation.
+
+save card ->
+if player not present -> throw exception
+if card present for the date-> exception
+if card not present for the date -> insert
+insert only before today, if wicket, no runs after that in score card
+
+spring.jpa.open-in-view - keeps the session open until the request it totally execuited and response is given - useful for lazy loading.
+
+if we move to spring-boot-starter-data-jpa we should not create session factory on own, instead we need to use autowired session factory.
+
+if we are using sessions explicitly then we need to create transactions and commit explicitly. or we can use repo interface which does this
+for us automatically.
+
+Kafka CMD CLI implementation-----------------------------------------------------------------------------------------
+
+# Start the ZooKeeper service
+$ bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+
+# Start the Kafka broker service
+$ bin\windows\kafka-server-start.bat config\server.properties
+
+#Create Topic
+$ bin\windows\kafka-topics.bat --create --topic bat-v-ball --bootstrap-server localhost:9092
+
+#To get TOpic Information
+kafka-topics.sh
+
+#Start producer
+$ bin\windows\kafka-console-producer.bat --topic bat-v-ball --bootstrap-server localhost:9092
+add  for key value pair ->  --property "parse.key=true" --property "key.separator=:"
+
+#start consumer
+bin\windows\kafka-console-consumer.bat --topic bat-v-ball --from-beginning --bootstrap-server localhost:9092
+
+now start writing content into producer which can be read by consumer
+---------------------------------------------------------------------------------------------------------------------
+
