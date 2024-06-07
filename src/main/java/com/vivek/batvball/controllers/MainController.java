@@ -25,10 +25,9 @@ public class MainController {
 	@Autowired
 	PlayerService playerService;
 	
-	@GetMapping(value="/get-by-id")
-	public ResponseEntity<String> getRunsById(@RequestParam("id") Integer id) {
-		dao.getPlayerDetailsById(id);
-		return new ResponseEntity<String>(HttpStatus.OK);
+	@GetMapping(value="/is-player-present")
+	public ResponseEntity<Boolean> getRunsById(@RequestParam("id") Integer id) {
+		return new ResponseEntity<Boolean>(dao.isPlayerPresent(id), HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/get-six-hitter")

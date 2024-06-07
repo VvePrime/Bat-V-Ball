@@ -30,6 +30,13 @@ public class PlayerDAO {
 		return player;
 	}
 	
+	public Boolean isPlayerPresent(Integer id){
+		Session ss = sf.openSession();
+		Player player = ss.find(Player.class, id);		
+		ss.close();
+		return null != player;
+	}
+	
 	public Boolean isPresent(Integer id){
 		Session ss = sf.openSession();
 		Player player = ss.find(Player.class, id);		

@@ -31,6 +31,7 @@ public class RequestLoggingAspect {
                     request.getQueryString(), 
                     Arrays.toString(joinPoint.getArgs()));
     }
+    
 
     @AfterReturning(pointcut = "execution(* com.vivek.batvball.controllers.*.*(..))", returning = "result")
     public void logResponseAfter(JoinPoint joinPoint, Object result) {

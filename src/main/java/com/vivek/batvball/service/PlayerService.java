@@ -63,12 +63,12 @@ public class PlayerService {
 	}
 
 	private boolean validateInput(ScoreCardInputDTO scoreCardDTO) {
-		Boolean isDateValid = false;
+		//Boolean isDateValid = false;
 		Boolean isCardValid = false;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	        LocalDate date = LocalDate.parse(scoreCardDTO.getDateString(), formatter);
-	        isDateValid = date.isBefore(LocalDate.now());
+	        //isDateValid = date.isBefore(LocalDate.now());
 		}
 		catch(DateTimeParseException ex) {
 			logger.error("Date format is invalid. required format is : dd-mm-yyyy");
@@ -78,9 +78,9 @@ public class PlayerService {
 			isCardValid = true;
 		if(!isCardValid)
 			logger.info("Score Card is invalid. Runs shouldnt be present after wicket.");
-		if(!isDateValid)
-			logger.info("Date is invalid.");
-		return isDateValid && isCardValid;
+//		if(!isDateValid)
+//			logger.info("Date is invalid.");
+		return  isCardValid; //isDateValid &&
 	}
 
 	private void insertScoreCard(ScoreCardInputDTO scoreCardDTO, Player player) {
