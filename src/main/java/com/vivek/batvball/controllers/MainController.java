@@ -16,7 +16,7 @@ import com.vivek.batvball.entities.Player;
 import com.vivek.batvball.service.PlayerService;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value="/api/bat-v-ball")
 public class MainController {
 	
 	@Autowired
