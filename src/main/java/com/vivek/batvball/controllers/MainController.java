@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vivek.batvball.dao.PlayerDAO;
 import com.vivek.batvball.dto.ScoreCardInputDTO;
 import com.vivek.batvball.entities.Player;
+import com.vivek.batvball.service.JobExecutionService;
 import com.vivek.batvball.service.PlayerService;
 
 @RestController
@@ -24,6 +25,9 @@ public class MainController {
 	
 	@Autowired
 	PlayerService playerService;
+	
+	@Autowired
+	JobExecutionService jobExecutionService;
 	
 	@GetMapping(value="/is-player-present")
 	public ResponseEntity<Boolean> getRunsById(@RequestParam("id") Integer id) {
@@ -60,6 +64,12 @@ public class MainController {
 	@PostMapping(value="/process-file")
 	public ResponseEntity<String> processFile(){
 		playerService.processFile();
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/execute-job")
+	public ResponseEntity<String> executeJob(){
+		jobExecutionService.execute();
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
