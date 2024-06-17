@@ -54,12 +54,21 @@ public class PlayerService {
 				.withType(ScoreCardInputDTO.class).withIgnoreLeadingWhiteSpace(true).build();
 		return csvToBean.parse();
 	}
+	
+	public void saveScoreCard(ScoreCardInputDTO scoreCardDTO) {
+		Player player = processInput(scoreCardDTO);
+		if( null != player ) {
+			playerDAO.saveScoreCard(player);
+			logger.info("Score Card successfully saved.");
+		}
+	}
 
-	public void processInput(ScoreCardInputDTO scoreCardDTO) {
+	public Player processInput(ScoreCardInputDTO scoreCardDTO) {
 		Player player = playerDAO.getPlayerDetailsById(scoreCardDTO.getPlayerId());
 		if (null != player && validateInput(scoreCardDTO) && !isCardAlreadyPresent(scoreCardDTO, player)) {
-			insertScoreCard(scoreCardDTO, player);
+			return getScoreCard(scoreCardDTO, player);
 		}
+		return null;
 	}
 
 	private boolean validateInput(ScoreCardInputDTO scoreCardDTO) {
@@ -83,10 +92,9 @@ public class PlayerService {
 		return  isCardValid; //isDateValid &&
 	}
 
-	private void insertScoreCard(ScoreCardInputDTO scoreCardDTO, Player player) {
+	private Player getScoreCard(ScoreCardInputDTO scoreCardDTO, Player player) {
 		calculateScore(scoreCardDTO, player);
-		playerDAO.saveScoreCard(player);
-		logger.info("Score Card successfully saved.");
+		return player;
 	}
 	
 	private Boolean isCardAlreadyPresent(ScoreCardInputDTO scoreCardDTO, Player player) {

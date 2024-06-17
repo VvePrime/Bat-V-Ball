@@ -53,7 +53,7 @@ public class MainController {
 	
 	@PostMapping(value="/process-scorecard")
 	public ResponseEntity<String> getRunsById(@RequestBody ScoreCardInputDTO scoreCardDTO) {
-		playerService.processInput(scoreCardDTO);
+		playerService.saveScoreCard(scoreCardDTO);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
